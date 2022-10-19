@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ClientModelMapper implements ClientMapper {
 
-    private final ModelMapper modelMapper;
     private static final String LOG_MESSAGE = "{} mapped {} to {}";
+    private final ModelMapper modelMapper;
 
     @Override
     public ClientResponse entityToDto(ClientEntity entity) {
