@@ -13,12 +13,13 @@ import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ExtendWith(OutputCaptureExtension.class)
 @ActiveProfiles("logging-test")
-class ClientModelMapperTest {
+class ClientModelMapperUnitTest {
 
     @Autowired
     private ClientModelMapper victim;
@@ -26,7 +27,7 @@ class ClientModelMapperTest {
     @Test
     void entityToDto_whenReceiveEntity_thenReturnResponse(CapturedOutput output) {
         ClientEntity entity = ClientTestUtil.clientEntity();
-        ClientResponse expected = ClientTestUtil.clientResponseDto(entity);
+        ClientResponse expected = ClientTestUtil.clientResponse(entity);
 
         ClientResponse result = victim.entityToDto(entity);
 
@@ -39,7 +40,7 @@ class ClientModelMapperTest {
     void dtoToEntity_whenCreateRequest_thenReturnEntity(CapturedOutput output) {
         ClientEntity expected = ClientTestUtil.clientEntity();
         expected.setId(null);
-        ClientCreateRequest requestDto = ClientTestUtil.clientCreateRequestDto(expected);
+        ClientCreateRequest requestDto = ClientTestUtil.clientCreateRequest(expected);
 
         ClientEntity result = victim.dtoToEntity(requestDto);
 
@@ -51,7 +52,7 @@ class ClientModelMapperTest {
     @Test
     void dtoToEntity_whenUpdateRequest_thenReturnEntity(CapturedOutput output) {
         ClientEntity expected = ClientTestUtil.clientEntity();
-        ClientUpdateRequest requestDto = ClientTestUtil.clientUpdateRequestDto(expected);
+        ClientUpdateRequest requestDto = ClientTestUtil.clientUpdateRequest(expected);
 
         ClientEntity result = victim.dtoToEntity(requestDto);
 

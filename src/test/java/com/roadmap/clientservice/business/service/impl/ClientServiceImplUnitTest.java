@@ -25,7 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
-class ClientServiceImplTest {
+public
+class ClientServiceImplUnitTest {
 
     @Mock
     ClientJpaRepository repository;
@@ -34,14 +35,13 @@ class ClientServiceImplTest {
     @InjectMocks
     ClientServiceImpl victim;
 
-
     @Test
     void save_whenRequestDto_thenSaveEntity_returnDto(CapturedOutput output) {
         ClientEntity requestEntity = clientEntity();
         requestEntity.setId(null);
-        ClientCreateRequest requestDto = clientCreateRequestDto(requestEntity);
+        ClientCreateRequest requestDto = clientCreateRequest(requestEntity);
         ClientEntity savedEntity = clientEntity();
-        ClientResponse expected = clientResponseDto(savedEntity);
+        ClientResponse expected = clientResponse(savedEntity);
         when(mapper.dtoToEntity(requestDto)).thenReturn(requestEntity);
         when(repository.save(requestEntity)).thenReturn(savedEntity);
         when(mapper.entityToDto(savedEntity)).thenReturn(expected);
@@ -59,7 +59,7 @@ class ClientServiceImplTest {
     @Test
     void findById_whenFound_thenReturnResponseDto(CapturedOutput output) {
         ClientEntity entity = clientEntity();
-        ClientResponse expected = clientResponseDto(entity);
+        ClientResponse expected = clientResponse(entity);
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
         when(mapper.entityToDto(entity)).thenReturn(expected);
 
@@ -87,11 +87,10 @@ class ClientServiceImplTest {
         verifyNoInteractions(mapper);
     }
 
-
     @Test
     void update_whenRequestDto_andNotFound_thenThrowClientNotFoundException(CapturedOutput output) {
         ClientEntity requestEntity = clientEntity();
-        ClientUpdateRequest requestDto = clientUpdateRequestDto(requestEntity);
+        ClientUpdateRequest requestDto = clientUpdateRequest(requestEntity);
         when(repository.findById(requestDto.getId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> victim.update(requestDto))
@@ -107,10 +106,10 @@ class ClientServiceImplTest {
     @Test
     void update_whenRequestDto_andFound_thenUpdateEntity_andReturnDto(CapturedOutput output) {
         ClientEntity requestEntity = clientEntity();
-        ClientUpdateRequest requestDto = clientUpdateRequestDto(requestEntity);
+        ClientUpdateRequest requestDto = clientUpdateRequest(requestEntity);
         ClientEntity updatedEntity = clientEntity();
         updatedEntity.setFirstName("New First Name");
-        ClientResponse expected = clientResponseDto(updatedEntity);
+        ClientResponse expected = clientResponse(updatedEntity);
 
         when(repository.findById(requestDto.getId())).thenReturn(Optional.of(requestEntity));
         when(mapper.dtoToEntity(requestDto)).thenReturn(requestEntity);
@@ -131,7 +130,6 @@ class ClientServiceImplTest {
 
     @Test
     void deleteById_whenId_andFound_thenDelete(CapturedOutput output) {
-        Long id = 1L;
         when(repository.existsById(id)).thenReturn(true);
         doNothing().when(repository).deleteById(id);
 
@@ -146,7 +144,6 @@ class ClientServiceImplTest {
 
     @Test
     void deleteById_whenId_andNotFound_thenThrowClientNotFoundException(CapturedOutput output) {
-        Long id = 1L;
         when(repository.existsById(id)).thenReturn(false);
 
         assertThatThrownBy(() -> victim.deleteById(id))
@@ -158,7 +155,6 @@ class ClientServiceImplTest {
         verifyNoMoreInteractions(repository);
         verifyNoInteractions(mapper);
     }
-
 
 
 }

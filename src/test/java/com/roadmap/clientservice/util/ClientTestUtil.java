@@ -4,17 +4,28 @@ import com.roadmap.clientservice.business.repository.model.ClientEntity;
 import com.roadmap.clientservice.model.ClientCreateRequest;
 import com.roadmap.clientservice.model.ClientResponse;
 import com.roadmap.clientservice.model.ClientUpdateRequest;
+import com.roadmap.clientservice.web.controller.ClientController;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 public class ClientTestUtil {
+
+    public static final Long id = 1L;
+    public static final URI save_uri = linkTo(methodOn(ClientController.class).save(null, null)).toUri();
+    public static final URI update_uri = linkTo(methodOn(ClientController.class).update(null)).toUri();
+    public static final URI findById_uri = linkTo(methodOn(ClientController.class).findById(id)).toUri();
+    public static final URI deleteById_uri = linkTo(methodOn(ClientController.class).deleteById(id)).toUri();
 
     public static ClientEntity clientEntity() {
         ClientEntity entity = new ClientEntity();
-        entity.setId(1L);
+        entity.setId(id);
         entity.setFirstName("FirstName");
         entity.setLastName("LastName");
         entity.setCreated(LocalDateTime.now());
@@ -27,7 +38,7 @@ public class ClientTestUtil {
         return entity;
     }
 
-    public static ClientCreateRequest clientCreateRequestDto(ClientEntity entity) {
+    public static ClientCreateRequest clientCreateRequest(ClientEntity entity) {
         ClientCreateRequest request = new ClientCreateRequest();
         request.setDateOfBirth(entity.getDateOfBirth());
         request.setFirstName(entity.getFirstName());
@@ -42,7 +53,7 @@ public class ClientTestUtil {
         return request;
     }
 
-    public static ClientUpdateRequest clientUpdateRequestDto(ClientEntity entity) {
+    public static ClientUpdateRequest clientUpdateRequest(ClientEntity entity) {
         ClientUpdateRequest request = new ClientUpdateRequest();
         request.setDateOfBirth(entity.getDateOfBirth());
         request.setFirstName(entity.getFirstName());
@@ -57,7 +68,7 @@ public class ClientTestUtil {
         return request;
     }
 
-    public static ClientResponse clientResponseDto(ClientEntity entity) {
+    public static ClientResponse clientResponse(ClientEntity entity) {
         ClientResponse response = new ClientResponse();
         response.setDateOfBirth(entity.getDateOfBirth());
         response.setFirstName(entity.getFirstName());
