@@ -12,6 +12,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 
+import static com.roadmap.clientservice.business.service.message.ClientMessage.*;
+
 @RestController
 @RequestMapping("api/v1/clients")
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class ClientController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<ClientResponse> save(@Valid @RequestBody ClientCreateRequest request,
                                                UriComponentsBuilder builder) {
-        log.info("Save Client request with body: {}", request);
+        log.info(SAVE_REQUEST_LOG + request);
         ClientResponse response = service.save(request);
         return ResponseEntity.created(
                         builder.path("api/v1/clients/{id}")
@@ -34,21 +36,21 @@ public class ClientController {
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ClientResponse> findById(@PathVariable Long id) {
-        log.info("Find Client by Id request with id: {}", id);
+        log.info(FIND_BY_ID_REQUEST_LOG + id);
         ClientResponse dto = service.findById(id);
         return ResponseEntity.ok(dto);
     }
 
     @PutMapping(produces = "application/json")
     public ResponseEntity<ClientResponse> update(@Valid @RequestBody ClientUpdateRequest request) {
-        log.info("Update Client request with body: {}", request);
+        log.info(UPDATE_REQUEST_LOG + request);
         ClientResponse response = service.update(request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ClientResponse> delete(@PathVariable Long id) {
-        log.info("Delete Client request with id: {}", id);
+    public ResponseEntity<ClientResponse> deleteById(@PathVariable Long id) {
+        log.info(DELETE_BY_ID_REQUEST_LOG + id);
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
