@@ -29,7 +29,7 @@ class ClientModelMapperUnitTest {
         ClientEntity entity = ClientTestUtil.clientEntity();
         ClientResponse expected = ClientTestUtil.clientResponse(entity);
 
-        ClientResponse result = victim.entityToDto(entity);
+        ClientResponse result = victim.entityToResponse(entity);
 
         assertEquals(expected, result);
         assertTrue(output.getOut().contains(entity.toString()));
@@ -42,7 +42,7 @@ class ClientModelMapperUnitTest {
         expected.setId(null);
         ClientCreateRequest requestDto = ClientTestUtil.clientCreateRequest(expected);
 
-        ClientEntity result = victim.dtoToEntity(requestDto);
+        ClientEntity result = victim.requestToEntity(requestDto);
 
         assertEquals(expected, result);
         assertTrue(output.getOut().contains(expected.toString()));
@@ -54,7 +54,7 @@ class ClientModelMapperUnitTest {
         ClientEntity expected = ClientTestUtil.clientEntity();
         ClientUpdateRequest requestDto = ClientTestUtil.clientUpdateRequest(expected);
 
-        ClientEntity result = victim.dtoToEntity(requestDto);
+        ClientEntity result = victim.requestToEntity(requestDto);
 
         assertEquals(expected, result);
         assertTrue(output.getOut().contains(expected.toString()));

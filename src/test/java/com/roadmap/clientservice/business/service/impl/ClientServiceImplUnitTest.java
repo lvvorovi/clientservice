@@ -1,10 +1,10 @@
 package com.roadmap.clientservice.business.service.impl;
 
-import com.roadmap.clientservice.business.exception.ClientNotFoundException;
-import com.roadmap.clientservice.business.exception.message.ExceptionMessage;
 import com.roadmap.clientservice.business.mapper.ClientMapper;
 import com.roadmap.clientservice.business.repository.ClientJpaRepository;
 import com.roadmap.clientservice.business.repository.model.ClientEntity;
+import com.roadmap.clientservice.business.validation.exception.ClientNotFoundException;
+import com.roadmap.clientservice.business.validation.service.ClientValidationService;
 import com.roadmap.clientservice.model.ClientCreateRequest;
 import com.roadmap.clientservice.model.ClientResponse;
 import com.roadmap.clientservice.model.ClientUpdateRequest;
@@ -18,6 +18,7 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import java.util.Optional;
 
+import static com.roadmap.clientservice.business.validation.exception.message.ValidationExceptionMessage.*;
 import static com.roadmap.clientservice.util.ClientTestUtil.*;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,51 +26,55 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
-public
 class ClientServiceImplUnitTest {
 
     @Mock
     ClientJpaRepository repository;
     @Mock
     ClientMapper mapper;
+    @Mock
+    ClientValidationService validationService;
     @InjectMocks
     ClientServiceImpl victim;
 
     @Test
-    void save_whenRequestDto_thenSaveEntity_returnDto(CapturedOutput output) {
+    void save_whenRequest_thenValidate_saveEntity_returnResponse(CapturedOutput output) {
         ClientEntity requestEntity = clientEntity();
         requestEntity.setId(null);
-        ClientCreateRequest requestDto = clientCreateRequest(requestEntity);
+        ClientCreateRequest request = clientCreateRequest(requestEntity);
         ClientEntity savedEntity = clientEntity();
         ClientResponse expected = clientResponse(savedEntity);
-        when(mapper.dtoToEntity(requestDto)).thenReturn(requestEntity);
+        doNothing().when(validationService).validate(request);
+        when(mapper.requestToEntity(request)).thenReturn(requestEntity);
         when(repository.save(requestEntity)).thenReturn(savedEntity);
-        when(mapper.entityToDto(savedEntity)).thenReturn(expected);
+        when(mapper.entityToResponse(savedEntity)).thenReturn(expected);
 
-        ClientResponse result = victim.save(requestDto);
+        ClientResponse result = victim.save(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(savedEntity.toString()));
-        verify(mapper, times(1)).dtoToEntity(requestDto);
+        assertTrue(output.getOut().contains(CLIENT_SAVED + savedEntity));
+        verify(mapper, times(1)).requestToEntity(request);
         verify(repository, times(1)).save(requestEntity);
-        verify(mapper, times(1)).entityToDto(savedEntity);
-        verifyNoMoreInteractions(mapper, repository);
+        verify(mapper, times(1)).entityToResponse(savedEntity);
+        verify(validationService, times(1)).validate(request);
+        verifyNoMoreInteractions(mapper, repository, validationService);
     }
 
     @Test
-    void findById_whenFound_thenReturnResponseDto(CapturedOutput output) {
+    void findById_whenFound_thenReturnResponse(CapturedOutput output) {
         ClientEntity entity = clientEntity();
         ClientResponse expected = clientResponse(entity);
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
-        when(mapper.entityToDto(entity)).thenReturn(expected);
+        when(mapper.entityToResponse(entity)).thenReturn(expected);
 
         ClientResponse result = victim.findById(entity.getId());
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(result.toString()));
+        assertTrue(output.getOut().contains(CLIENT_FOUND + entity));
         verify(repository, times(1)).findById(entity.getId());
-        verify(mapper, times(1)).entityToDto(entity);
+        verify(mapper, times(1)).entityToResponse(entity);
         verifyNoMoreInteractions(repository, mapper);
+        verifyNoInteractions(validationService);
     }
 
     @Test
@@ -80,52 +85,34 @@ class ClientServiceImplUnitTest {
 
         assertThatThrownBy(() -> victim.findById(id))
                 .isInstanceOf(ClientNotFoundException.class)
-                .hasMessage(ExceptionMessage.CLIENT_WITH_ID_NOT_FOUND + entity.getId());
+                .hasMessage(CLIENT_ID_NOT_FOUND + entity.getId());
 
-        assertFalse(output.getOut().contains(entity.toString()));
+        assertFalse(output.getOut().contains(CLIENT_FOUND));
         verifyNoMoreInteractions(repository);
-        verifyNoInteractions(mapper);
+        verifyNoInteractions(mapper, validationService);
     }
 
     @Test
-    void update_whenRequestDto_andNotFound_thenThrowClientNotFoundException(CapturedOutput output) {
+    void update_whenRequest_thenValidate_updateEntity_andReturn(CapturedOutput output) {
         ClientEntity requestEntity = clientEntity();
-        ClientUpdateRequest requestDto = clientUpdateRequest(requestEntity);
-        when(repository.findById(requestDto.getId())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> victim.update(requestDto))
-                .isInstanceOf(ClientNotFoundException.class)
-                .hasMessage(ExceptionMessage.CLIENT_WITH_ID_NOT_FOUND + requestEntity.getId());
-
-        assertFalse(output.getOut().contains(requestEntity.toString()));
-        verify(repository, times(1)).findById(requestDto.getId());
-        verifyNoMoreInteractions(repository);
-        verifyNoInteractions(mapper);
-    }
-
-    @Test
-    void update_whenRequestDto_andFound_thenUpdateEntity_andReturnDto(CapturedOutput output) {
-        ClientEntity requestEntity = clientEntity();
-        ClientUpdateRequest requestDto = clientUpdateRequest(requestEntity);
+        ClientUpdateRequest request = clientUpdateRequest(requestEntity);
         ClientEntity updatedEntity = clientEntity();
         updatedEntity.setFirstName("New First Name");
         ClientResponse expected = clientResponse(updatedEntity);
-
-        when(repository.findById(requestDto.getId())).thenReturn(Optional.of(requestEntity));
-        when(mapper.dtoToEntity(requestDto)).thenReturn(requestEntity);
+        when(mapper.requestToEntity(request)).thenReturn(requestEntity);
         when(repository.save(requestEntity)).thenReturn(updatedEntity);
-        when(mapper.entityToDto(updatedEntity)).thenReturn(expected);
+        when(mapper.entityToResponse(updatedEntity)).thenReturn(expected);
+        doNothing().when(validationService).validate(request);
 
-        ClientResponse result = victim.update(requestDto);
+        ClientResponse result = victim.update(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(requestEntity.toString()));
-        assertTrue(output.getOut().contains(updatedEntity.toString()));
-        verify(repository, times(1)).findById(requestDto.getId());
-        verify(mapper, times(1)).dtoToEntity(requestDto);
+        assertTrue(output.getOut().contains(CLIENT_UPDATED + updatedEntity));
+        verify(mapper, times(1)).requestToEntity(request);
         verify(repository, times(1)).save(requestEntity);
-        verify(mapper, times(1)).entityToDto(updatedEntity);
-        verifyNoMoreInteractions(repository, mapper);
+        verify(mapper, times(1)).entityToResponse(updatedEntity);
+        verify(validationService, times(1)).validate(request);
+        verifyNoMoreInteractions(repository, mapper, validationService);
     }
 
     @Test
@@ -135,11 +122,11 @@ class ClientServiceImplUnitTest {
 
         assertThatNoException().isThrownBy(() -> victim.deleteById(id));
 
-        assertTrue(output.getOut().contains("Client deleted"));
+        assertTrue(output.getOut().contains(CLIENT_DELETED_BY_ID + id));
         verify(repository, times(1)).existsById(id);
         verify(repository, times(1)).deleteById(id);
         verifyNoMoreInteractions(repository);
-        verifyNoInteractions(mapper);
+        verifyNoInteractions(mapper, validationService);
     }
 
     @Test
@@ -148,12 +135,12 @@ class ClientServiceImplUnitTest {
 
         assertThatThrownBy(() -> victim.deleteById(id))
                 .isInstanceOf(ClientNotFoundException.class)
-                .hasMessage(ExceptionMessage.CLIENT_WITH_ID_NOT_FOUND + id);
+                .hasMessage(CLIENT_ID_NOT_FOUND + id);
 
-        assertFalse(output.getOut().contains("Client deleted"));
+        assertFalse(output.getOut().contains(CLIENT_DELETED_BY_ID + id));
         verify(repository, times(1)).existsById(id);
         verifyNoMoreInteractions(repository);
-        verifyNoInteractions(mapper);
+        verifyNoInteractions(mapper, validationService);
     }
 
 

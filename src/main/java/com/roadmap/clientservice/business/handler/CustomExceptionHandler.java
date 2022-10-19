@@ -1,6 +1,6 @@
 package com.roadmap.clientservice.business.handler;
 
-import com.roadmap.clientservice.business.exception.ClientNotFoundException;
+import com.roadmap.clientservice.business.validation.exception.ValidationException;
 import com.roadmap.clientservice.model.ErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.stream.Collectors;
 
+import static com.roadmap.clientservice.business.validation.exception.message.ValidationExceptionMessage.VALIDATION_FAILED;
+
 @ControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
@@ -22,7 +24,7 @@ public class CustomExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         ErrorDto errorDto = new ErrorDto(message);
-        log.info("Error caught: {}", errorDto);
+        log.warn(VALIDATION_FAILED + errorDto);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -30,11 +32,21 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDto> handleClientNotFoundException(ClientNotFoundException ex) {
+    public ResponseEntity<ErrorDto> handleClientNotFoundException(ValidationException ex) {
+        log.warn(VALIDATION_FAILED + ex.getMessage());
         ErrorDto errorDto = new ErrorDto(ex.getMessage());
-        log.info("Error caught: {}", errorDto);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDto> handleError(Error ex) {
+        log.error(ex.getMessage(), ex);
+        ErrorDto errorDto = new ErrorDto(ex.getMessage());
+        return ResponseEntity
+                .internalServerError()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(errorDto);
     }

@@ -1,17 +1,19 @@
 package com.roadmap.clientservice.business.service.impl;
 
-import com.roadmap.clientservice.business.exception.ClientNotFoundException;
-import com.roadmap.clientservice.business.exception.message.ExceptionMessage;
 import com.roadmap.clientservice.business.mapper.ClientMapper;
 import com.roadmap.clientservice.business.repository.ClientJpaRepository;
 import com.roadmap.clientservice.business.repository.model.ClientEntity;
 import com.roadmap.clientservice.business.service.ClientService;
+import com.roadmap.clientservice.business.validation.exception.ClientNotFoundException;
+import com.roadmap.clientservice.business.validation.service.ClientValidationService;
 import com.roadmap.clientservice.model.ClientCreateRequest;
 import com.roadmap.clientservice.model.ClientResponse;
 import com.roadmap.clientservice.model.ClientUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.roadmap.clientservice.business.validation.exception.message.ValidationExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,34 +22,32 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientJpaRepository repository;
     private final ClientMapper mapper;
+    private final ClientValidationService validationService;
 
     @Override
-    public ClientResponse save(ClientCreateRequest requestDto) {
-        ClientEntity entityToSave = mapper.dtoToEntity(requestDto);
+    public ClientResponse save(ClientCreateRequest request) {
+        validationService.validate(request);
+        ClientEntity entityToSave = mapper.requestToEntity(request);
         ClientEntity savedEntity = repository.save(entityToSave);
-        log.info("Client saved: {}", savedEntity);
-        return mapper.entityToDto(savedEntity);
+        log.info(CLIENT_SAVED + savedEntity);
+        return mapper.entityToResponse(savedEntity);
     }
 
     @Override
     public ClientResponse findById(Long id) {
-        ClientResponse dto = repository.findById(id)
-                .map(mapper::entityToDto)
-                .orElseThrow(() -> new ClientNotFoundException(ExceptionMessage.CLIENT_WITH_ID_NOT_FOUND + id));
-        log.debug("Client with id {} found: {}", id, dto);
-        return dto;
+        ClientEntity entity = repository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(CLIENT_ID_NOT_FOUND + id));
+        log.debug(CLIENT_FOUND + entity);
+        return mapper.entityToResponse(entity);
     }
 
     @Override
-    public ClientResponse update(ClientUpdateRequest requestDto) {
-        ClientEntity entityToUpdate = repository.findById(requestDto.getId())
-                .orElseThrow(() -> new ClientNotFoundException(
-                        ExceptionMessage.CLIENT_WITH_ID_NOT_FOUND + requestDto.getId()));
-
-        ClientEntity requestEntity = mapper.dtoToEntity(requestDto);
+    public ClientResponse update(ClientUpdateRequest request) {
+        validationService.validate(request);
+        ClientEntity requestEntity = mapper.requestToEntity(request);
         ClientEntity updatedEntity = repository.save(requestEntity);
-        log.info("Client was updated from {} to {}", entityToUpdate, updatedEntity);
-        return mapper.entityToDto(updatedEntity);
+        log.info(CLIENT_UPDATED + updatedEntity);
+        return mapper.entityToResponse(updatedEntity);
     }
 
     @Override
@@ -55,9 +55,9 @@ public class ClientServiceImpl implements ClientService {
         boolean exists = repository.existsById(id);
         if (exists) {
             repository.deleteById(id);
-            log.info("Client deleted with id: {}", id);
+            log.info(CLIENT_DELETED_BY_ID + id);
         } else {
-            throw new ClientNotFoundException(ExceptionMessage.CLIENT_WITH_ID_NOT_FOUND + id);
+            throw new ClientNotFoundException(CLIENT_ID_NOT_FOUND + id);
         }
     }
 }

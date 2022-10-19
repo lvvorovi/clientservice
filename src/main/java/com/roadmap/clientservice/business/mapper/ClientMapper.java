@@ -7,9 +7,9 @@ import com.roadmap.clientservice.model.ClientUpdateRequest;
 
 public interface ClientMapper {
 
-    ClientResponse entityToDto(ClientEntity entity);
+    ClientResponse entityToResponse(ClientEntity entity);
 
-    ClientEntity dtoToEntity(ClientCreateRequest dto);
+    ClientEntity requestToEntity(ClientCreateRequest request);
 
-    ClientEntity dtoToEntity(ClientUpdateRequest dto);
+    ClientEntity requestToEntity(ClientUpdateRequest request);
 }

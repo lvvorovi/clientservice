@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/clients")
 @RequiredArgsConstructor
-public class TmlClientController {
+public class MnVClientController {
 
     private final ClientService service;
 

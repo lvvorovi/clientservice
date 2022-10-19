@@ -19,23 +19,23 @@ public class ClientModelMapper implements ClientMapper {
     private final ModelMapper modelMapper;
 
     @Override
-    public ClientResponse entityToDto(ClientEntity entity) {
+    public ClientResponse entityToResponse(ClientEntity entity) {
         ClientResponse dto = modelMapper.map(entity, ClientResponse.class);
         log.debug(LOG_MESSAGE, this.getClass(), entity, dto);
         return dto;
     }
 
     @Override
-    public ClientEntity dtoToEntity(ClientCreateRequest dto) {
-        ClientEntity entity = modelMapper.map(dto, ClientEntity.class);
-        log.debug(LOG_MESSAGE, this.getClass(), dto, entity);
+    public ClientEntity requestToEntity(ClientCreateRequest request) {
+        ClientEntity entity = modelMapper.map(request, ClientEntity.class);
+        log.debug(LOG_MESSAGE, this.getClass(), request, entity);
         return entity;
     }
 
     @Override
-    public ClientEntity dtoToEntity(ClientUpdateRequest dto) {
-        ClientEntity entity = modelMapper.map(dto, ClientEntity.class);
-        log.debug(LOG_MESSAGE, this.getClass(), dto, entity);
+    public ClientEntity requestToEntity(ClientUpdateRequest request) {
+        ClientEntity entity = modelMapper.map(request, ClientEntity.class);
+        log.debug(LOG_MESSAGE, this.getClass(), request, entity);
         return entity;
     }
 }
