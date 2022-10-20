@@ -10,11 +10,4 @@ public class ClientServiceApplication {
         SpringApplication.run(ClientServiceApplication.class, args);
     }
 
-    /*
-    * TODO
-    *  - Rule UT
-    *  - Context Loads test - test beans
-    *  -
-    * */
-
 }
