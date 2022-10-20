@@ -3,10 +3,16 @@ package com.roadmap.clientservice.web.controller;
 import com.roadmap.clientservice.business.service.ClientService;
 import com.roadmap.clientservice.model.ClientCreateRequest;
 import com.roadmap.clientservice.model.ClientResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import static com.roadmap.clientservice.swagger.ApiResponseStore.*;
+import static com.roadmap.clientservice.swagger.SwagerTagStore.CLIENT_CONTROLLER_TAG;
 
 @Controller
 @RequestMapping("/clients")
@@ -38,3 +44,5 @@ public class MnVClientController {
         return view;
     }
 }
+
+

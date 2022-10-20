@@ -1,6 +1,5 @@
 package com.roadmap.clientservice.model;
 
-import com.roadmap.clientservice.business.LogMessageStore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -16,9 +15,6 @@ import static com.roadmap.clientservice.business.LogMessageStore.*;
 @Validated
 @NotNull
 public class ClientCreateRequest {
-
-    @Null
-    private Long id;
 
     @NotBlank(message = FIELD_NOT_BLANK)
     @Size(max = 45, message = FIELD_MAX_LENGTH_45)
