@@ -1,6 +1,7 @@
 package com.roadmap.clientservice.business.validation.service.impl;
 
-import com.roadmap.clientservice.business.validation.rule.ClientValidationRule;
+import com.roadmap.clientservice.business.validation.rule.ClientCreateValidationRule;
+import com.roadmap.clientservice.business.validation.rule.ClientUpdateValidationRule;
 import com.roadmap.clientservice.business.validation.service.ClientValidationService;
 import com.roadmap.clientservice.model.ClientCreateRequest;
 import com.roadmap.clientservice.model.ClientUpdateRequest;
@@ -13,15 +14,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientValidationServiceImpl implements ClientValidationService {
 
-    private final List<ClientValidationRule> ruleList;
+    private final List<ClientCreateValidationRule> createRuleList;
+    private final List<ClientUpdateValidationRule> updateRuleList;
 
     @Override
     public void validate(ClientCreateRequest request) {
-        ruleList.forEach(rule -> rule.validate(request));
+        createRuleList.forEach(rule -> rule.validate(request));
     }
 
     @Override
     public void validate(ClientUpdateRequest request) {
-        ruleList.forEach(rule -> rule.validate(request));
+        updateRuleList.forEach(rule -> rule.validate(request));
     }
 }
