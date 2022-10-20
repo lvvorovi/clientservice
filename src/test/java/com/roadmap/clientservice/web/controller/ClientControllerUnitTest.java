@@ -42,7 +42,6 @@ class ClientControllerUnitTest {
         ClientEntity entity = clientEntity();
         ClientCreateRequest request = clientCreateRequest(entity);
         ClientResponse expected = clientResponse(entity);
-        request.setId(null);
         when(service.save(request)).thenReturn(expected);
 
         MvcResult mvcResult = mvc.perform(post(save_uri)

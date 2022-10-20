@@ -43,7 +43,6 @@ public class ClientTestUtil {
         request.setDateOfBirth(entity.getDateOfBirth());
         request.setFirstName(entity.getFirstName());
         request.setLastName(entity.getLastName());
-        request.setId(null);
         request.setCreated(entity.getCreated());
         request.setExpenses(entity.getExpenses());
         request.setOccupation(entity.getOccupation());

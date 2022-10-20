@@ -39,7 +39,6 @@ class ClientControllerIntegrationTest {
     void save_whenValidBody_thenSave_andReturnResponse(CapturedOutput output) throws Exception {
         ClientEntity entity = clientEntity();
         ClientCreateRequest request = clientCreateRequest(entity);
-        request.setId(null);
         ClientResponse expected = clientResponse(entity);
 
         MvcResult mvcResult = mvc.perform(post(save_uri)
