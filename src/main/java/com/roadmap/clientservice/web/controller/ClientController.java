@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 
-import static com.roadmap.clientservice.business.service.message.ClientMessage.*;
+import static com.roadmap.clientservice.business.LogMessageStore.*;
 
 @RestController
 @RequestMapping("api/v1/clients")
@@ -25,7 +25,7 @@ public class ClientController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<ClientResponse> save(@Valid @RequestBody ClientCreateRequest request,
                                                UriComponentsBuilder builder) {
-        log.info(SAVE_REQUEST_LOG + request);
+        log.info(CLIENT_SAVE_REQUEST_LOG + request);
         ClientResponse response = service.save(request);
         return ResponseEntity.created(
                         builder.path("api/v1/clients/{id}")
@@ -36,21 +36,21 @@ public class ClientController {
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ClientResponse> findById(@PathVariable Long id) {
-        log.info(FIND_BY_ID_REQUEST_LOG + id);
-        ClientResponse dto = service.findById(id);
-        return ResponseEntity.ok(dto);
+        log.info(CLIENT_FIND_BY_ID_REQUEST_LOG + id);
+        ClientResponse response = service.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(produces = "application/json")
     public ResponseEntity<ClientResponse> update(@Valid @RequestBody ClientUpdateRequest request) {
-        log.info(UPDATE_REQUEST_LOG + request);
+        log.info(CLIENT_UPDATE_REQUEST_LOG + request);
         ClientResponse response = service.update(request);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ClientResponse> deleteById(@PathVariable Long id) {
-        log.info(DELETE_BY_ID_REQUEST_LOG + id);
+        log.info(CLIENT_DELETE_BY_ID_REQUEST_LOG + id);
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
