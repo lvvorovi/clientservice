@@ -9,11 +9,15 @@ import java.time.LocalDateTime;
 @Validated
 public class ErrorDto {
 
+    private LocalDateTime timeStamp;
+    private final int code;
+    private final String error;
     private final String message;
-    private LocalDateTime caughtAt;
 
-    public ErrorDto(String message) {
+    public ErrorDto(int code, String error, String message) {
+        this.code = code;
+        this.error = error;
         this.message = message;
-        this.caughtAt = LocalDateTime.now();
+        this.timeStamp = LocalDateTime.now();
     }
 }
