@@ -33,6 +33,7 @@ public class CustomExceptionHandler {
                 .contentType(jsonMediaType)
                 .body(errorDto);
     }
+
     @ExceptionHandler
     public ResponseEntity<ErrorDto> handleClientNotFoundException(ValidationException ex) {
         log.warn(VALIDATION_FAILED + ex.getMessage());
