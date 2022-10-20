@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @Validated
 public class ErrorDto {
 
-    private LocalDateTime timeStamp;
     private final int code;
     private final String error;
     private final String message;
+    private LocalDateTime timeStamp;
 
     public ErrorDto(int code, String error, String message) {
         this.code = code;
