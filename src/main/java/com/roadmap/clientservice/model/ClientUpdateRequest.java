@@ -1,6 +1,5 @@
 package com.roadmap.clientservice.model;
 
-import com.roadmap.clientservice.business.LogMessageStore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
