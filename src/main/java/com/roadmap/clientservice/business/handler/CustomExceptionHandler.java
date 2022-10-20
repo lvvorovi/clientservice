@@ -1,5 +1,6 @@
 package com.roadmap.clientservice.business.handler;
 
+import com.roadmap.clientservice.business.validation.exception.ValidationException;
 import com.roadmap.clientservice.model.ErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import static com.roadmap.clientservice.business.LogMessageStore.VALIDATION_FAIL
 @Slf4j
 public class CustomExceptionHandler {
 
+    private final MediaType jsonMediaType = MediaType.APPLICATION_JSON;
+
     @ExceptionHandler
     public ResponseEntity<ErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         String message = ex.getFieldErrors().stream()
@@ -27,28 +30,29 @@ public class CustomExceptionHandler {
         log.warn(VALIDATION_FAILED + errorDto);
         return ResponseEntity
                 .status(status)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(jsonMediaType)
                 .body(errorDto);
     }
-/*
     @ExceptionHandler
     public ResponseEntity<ErrorDto> handleClientNotFoundException(ValidationException ex) {
         log.warn(VALIDATION_FAILED + ex.getMessage());
-        ErrorDto errorDto = new ErrorDto("400", ex.getMessage());
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ErrorDto errorDto = new ErrorDto(status.value(), status.getReasonPhrase(), ex.getMessage());
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
+                .status(status)
+                .contentType(jsonMediaType)
                 .body(errorDto);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorDto> handleError(Error ex) {
         log.error(ex.getMessage(), ex);
-        ErrorDto errorDto = new ErrorDto("500", ex.getMessage());
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ErrorDto errorDto = new ErrorDto(status.value(), status.getReasonPhrase(), ex.getMessage());
         return ResponseEntity
                 .internalServerError()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(jsonMediaType)
                 .body(errorDto);
-    }*/
+    }
 
 }
