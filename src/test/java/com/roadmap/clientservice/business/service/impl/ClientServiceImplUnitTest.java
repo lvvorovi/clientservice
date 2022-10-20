@@ -18,7 +18,7 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import java.util.Optional;
 
-import static com.roadmap.clientservice.business.validation.exception.message.ValidationExceptionMessage.*;
+import static com.roadmap.clientservice.business.LogMessageStore.*;
 import static com.roadmap.clientservice.util.ClientTestUtil.*;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,7 +52,7 @@ class ClientServiceImplUnitTest {
         ClientResponse result = victim.save(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_SAVED + savedEntity));
+        assertTrue(output.getOut().contains(CLIENT_SAVED_LOG + savedEntity));
         verify(mapper, times(1)).requestToEntity(request);
         verify(repository, times(1)).save(requestEntity);
         verify(mapper, times(1)).entityToResponse(savedEntity);
@@ -70,7 +70,7 @@ class ClientServiceImplUnitTest {
         ClientResponse result = victim.findById(entity.getId());
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_FOUND + entity));
+        assertTrue(output.getOut().contains(CLIENT_FOUND_LOG + entity));
         verify(repository, times(1)).findById(entity.getId());
         verify(mapper, times(1)).entityToResponse(entity);
         verifyNoMoreInteractions(repository, mapper);
@@ -87,7 +87,7 @@ class ClientServiceImplUnitTest {
                 .isInstanceOf(ClientNotFoundException.class)
                 .hasMessage(CLIENT_ID_NOT_FOUND + entity.getId());
 
-        assertFalse(output.getOut().contains(CLIENT_FOUND));
+        assertFalse(output.getOut().contains(CLIENT_FOUND_LOG));
         verifyNoMoreInteractions(repository);
         verifyNoInteractions(mapper, validationService);
     }
@@ -107,7 +107,7 @@ class ClientServiceImplUnitTest {
         ClientResponse result = victim.update(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_UPDATED + updatedEntity));
+        assertTrue(output.getOut().contains(CLIENT_UPDATED_LOG + updatedEntity));
         verify(mapper, times(1)).requestToEntity(request);
         verify(repository, times(1)).save(requestEntity);
         verify(mapper, times(1)).entityToResponse(updatedEntity);
@@ -122,7 +122,7 @@ class ClientServiceImplUnitTest {
 
         assertThatNoException().isThrownBy(() -> victim.deleteById(id));
 
-        assertTrue(output.getOut().contains(CLIENT_DELETED_BY_ID + id));
+        assertTrue(output.getOut().contains(CLIENT_DELETED_BY_ID_LOG + id));
         verify(repository, times(1)).existsById(id);
         verify(repository, times(1)).deleteById(id);
         verifyNoMoreInteractions(repository);
@@ -137,7 +137,7 @@ class ClientServiceImplUnitTest {
                 .isInstanceOf(ClientNotFoundException.class)
                 .hasMessage(CLIENT_ID_NOT_FOUND + id);
 
-        assertFalse(output.getOut().contains(CLIENT_DELETED_BY_ID + id));
+        assertFalse(output.getOut().contains(CLIENT_DELETED_BY_ID_LOG + id));
         verify(repository, times(1)).existsById(id);
         verifyNoMoreInteractions(repository);
         verifyNoInteractions(mapper, validationService);

@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static com.roadmap.clientservice.business.service.message.ClientMessage.*;
+import static com.roadmap.clientservice.business.LogMessageStore.*;
 import static com.roadmap.clientservice.util.ClientTestUtil.*;
 import static com.roadmap.clientservice.util.JsonUtil.jsonToClientResponse;
 import static com.roadmap.clientservice.util.JsonUtil.objectToJson;
@@ -55,7 +55,7 @@ class ClientControllerUnitTest {
         String content = mvcResult.getResponse().getContentAsString();
         ClientResponse result = jsonToClientResponse(content);
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(SAVE_REQUEST_LOG + request));
+        assertTrue(output.getOut().contains(CLIENT_SAVE_REQUEST_LOG + request));
         verify(service, times(1)).save(request);
         verifyNoMoreInteractions(service);
     }
@@ -71,7 +71,7 @@ class ClientControllerUnitTest {
                         .content(objectToJson(request)))
                 .andExpect(status().isBadRequest());
 
-        assertFalse(output.getOut().contains(SAVE_REQUEST_LOG + request));
+        assertFalse(output.getOut().contains(CLIENT_SAVE_REQUEST_LOG + request));
         verifyNoInteractions(service);
     }
 
@@ -88,7 +88,7 @@ class ClientControllerUnitTest {
         String content = mvcResult.getResponse().getContentAsString();
         ClientResponse result = jsonToClientResponse(content);
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(FIND_BY_ID_REQUEST_LOG + id));
+        assertTrue(output.getOut().contains(CLIENT_FIND_BY_ID_REQUEST_LOG + id));
         verify(service, times(1)).findById(id);
         verifyNoMoreInteractions(service);
     }
@@ -109,7 +109,7 @@ class ClientControllerUnitTest {
         String content = mvcResult.getResponse().getContentAsString();
         ClientResponse result = jsonToClientResponse(content);
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(UPDATE_REQUEST_LOG + request));
+        assertTrue(output.getOut().contains(CLIENT_UPDATE_REQUEST_LOG + request));
         verify(service, times(1)).update(request);
         verifyNoMoreInteractions(service);
     }
@@ -125,7 +125,7 @@ class ClientControllerUnitTest {
                         .content(objectToJson(request)))
                 .andExpect(status().isBadRequest());
 
-        assertFalse(output.getOut().contains(UPDATE_REQUEST_LOG + request));
+        assertFalse(output.getOut().contains(CLIENT_UPDATE_REQUEST_LOG + request));
         verifyNoInteractions(service);
     }
 
@@ -135,7 +135,7 @@ class ClientControllerUnitTest {
         mvc.perform(delete(deleteById_uri))
                 .andExpect(status().isNoContent());
 
-        assertTrue(output.getOut().contains(DELETE_BY_ID_REQUEST_LOG + id));
+        assertTrue(output.getOut().contains(CLIENT_DELETE_BY_ID_REQUEST_LOG + id));
         verify(service, times(1)).deleteById(id);
         verifyNoMoreInteractions(service);
     }

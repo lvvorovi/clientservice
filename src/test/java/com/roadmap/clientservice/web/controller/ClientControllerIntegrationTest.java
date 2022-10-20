@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
 
-import static com.roadmap.clientservice.business.service.message.ClientMessage.SAVE_REQUEST_LOG;
+import static com.roadmap.clientservice.business.LogMessageStore.CLIENT_SAVE_REQUEST_LOG;
 import static com.roadmap.clientservice.util.ClientTestUtil.*;
 import static com.roadmap.clientservice.util.JsonUtil.jsonToClientResponse;
 import static com.roadmap.clientservice.util.JsonUtil.objectToJson;
@@ -56,7 +56,7 @@ class ClientControllerIntegrationTest {
         assertNotNull(result.getId());
         assertNotNull(locationHeader);
         assertTrue(locationHeader.endsWith(result.getId().toString()));
-        assertTrue(output.getOut().contains(SAVE_REQUEST_LOG + request));
+        assertTrue(output.getOut().contains(CLIENT_SAVE_REQUEST_LOG + request));
 
     }
 
