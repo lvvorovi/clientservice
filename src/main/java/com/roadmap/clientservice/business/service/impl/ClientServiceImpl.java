@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static com.roadmap.clientservice.business.validation.exception.message.ValidationExceptionMessage.*;
+import static com.roadmap.clientservice.business.LogMessageStore.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
         validationService.validate(request);
         ClientEntity entityToSave = mapper.requestToEntity(request);
         ClientEntity savedEntity = repository.save(entityToSave);
-        log.info(CLIENT_SAVED + savedEntity);
+        log.info(CLIENT_SAVED_LOG + savedEntity);
         return mapper.entityToResponse(savedEntity);
     }
 
@@ -37,7 +37,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse findById(Long id) {
         ClientEntity entity = repository.findById(id)
                 .orElseThrow(() -> new ClientNotFoundException(CLIENT_ID_NOT_FOUND + id));
-        log.debug(CLIENT_FOUND + entity);
+        log.debug(CLIENT_FOUND_LOG + entity);
         return mapper.entityToResponse(entity);
     }
 
@@ -46,7 +46,7 @@ public class ClientServiceImpl implements ClientService {
         validationService.validate(request);
         ClientEntity requestEntity = mapper.requestToEntity(request);
         ClientEntity updatedEntity = repository.save(requestEntity);
-        log.info(CLIENT_UPDATED + updatedEntity);
+        log.info(CLIENT_UPDATED_LOG + updatedEntity);
         return mapper.entityToResponse(updatedEntity);
     }
 
@@ -55,7 +55,7 @@ public class ClientServiceImpl implements ClientService {
         boolean exists = repository.existsById(id);
         if (exists) {
             repository.deleteById(id);
-            log.info(CLIENT_DELETED_BY_ID + id);
+            log.info(CLIENT_DELETED_BY_ID_LOG + id);
         } else {
             throw new ClientNotFoundException(CLIENT_ID_NOT_FOUND + id);
         }
