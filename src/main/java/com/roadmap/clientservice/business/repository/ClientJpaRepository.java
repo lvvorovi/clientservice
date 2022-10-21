@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface ClientJpaRepository extends CrudRepository<ClientEntity, Long> {
 
     Optional<ClientEntity> findByPersonalNumber(String personalNumber);
+    boolean existsByPersonalNumber(String personalNumber);
 
 }

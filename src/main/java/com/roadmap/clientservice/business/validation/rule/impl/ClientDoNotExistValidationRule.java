@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import static com.roadmap.clientservice.business.LogMessageStore.CLIENT_ID_NOT_FOUND;
 
-
 @Component
 @RequiredArgsConstructor
 public class ClientDoNotExistValidationRule implements ClientUpdateValidationRule {

@@ -22,8 +22,8 @@ public class ClientAlreadyExistsValidationRule implements ClientCreateValidation
 
     @Override
     public void validate(ClientCreateRequest request) {
-        Optional<ClientEntity> entity = repository.findByPersonalNumber(request.getPersonalNumber());
-        if (entity.isPresent()) {
+        boolean exists = repository.existsByPersonalNumber(request.getPersonalNumber());
+        if (exists) {
             throw new ClientExistsException(CLIENT_PERSONAL_NUMBER_EXISTS + request.getPersonalNumber());
         }
     }
