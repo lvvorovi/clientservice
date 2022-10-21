@@ -56,7 +56,6 @@ class ClientControllerIntegrationTest {
         assertNotNull(locationHeader);
         assertTrue(locationHeader.endsWith(result.getId().toString()));
         assertTrue(output.getOut().contains(CLIENT_SAVE_REQUEST_LOG + request));
-
     }
 
     @Test
@@ -93,7 +92,16 @@ class ClientControllerIntegrationTest {
     }
 
     @Test
-    void delete_whenValidRequest_thenDelete_andReturnEmptyBody(CapturedOutput output) {
+    void delete_whenValidRequest_thenDelete_andReturnEmptyBody(CapturedOutput output) throws Exception {
+        MvcResult mvcResult = mvc.perform(delete(deleteById_uri))
+                .andExpect(status().isNoContent())
+                .andReturn();
 
+        String content = mvcResult.getResponse().getContentAsString();
+        assertTrue(content.isEmpty());
+        assertTrue(output.getOut().contains(CLIENT_DELETED_BY_ID_LOG + id));
+
+        mvc.perform(get(findById_uri))
+                .andExpect(status().isBadRequest());
     }
 }
