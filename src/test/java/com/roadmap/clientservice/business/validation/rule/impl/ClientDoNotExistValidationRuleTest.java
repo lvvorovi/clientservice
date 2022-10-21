@@ -27,7 +27,7 @@ class ClientDoNotExistValidationRuleTest {
     ClientDoNotExistValidationRule victim;
 
     @Test
-    void validate_updateRequest_whenNotFound_thenThrowException() {
+    void validate_updateRequest_whenNotFound_thenThrowClientNotFoundException() {
         ClientUpdateRequest request = clientUpdateRequest(clientEntity());
         when(repository.existsById(request.getId())).thenReturn(false);
 
