@@ -30,25 +30,25 @@ class ClientAlreadyExistsValidationRuleTest {
     @Test
     void validate_createRequest_whenDoesNotExist_thenNoException() {
         ClientCreateRequest request = clientCreateRequest(clientEntity());
-        when(repository.findByPersonalNumber(request.getPersonalNumber())).thenReturn(Optional.empty());
+        when(repository.existsByPersonalNumber(request.getPersonalNumber())).thenReturn(false);
 
         assertThatNoException().isThrownBy(() -> victim.validate(request));
 
-        verify(repository, times(1)).findByPersonalNumber(request.getPersonalNumber());
+        verify(repository, times(1)).existsByPersonalNumber(request.getPersonalNumber());
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void validate_createRequest_whenExists_thenThrowException() {
+    void validate_createRequest_whenExists_thenThrowClientExistsException() {
         ClientEntity entity = clientEntity();
         ClientCreateRequest request = clientCreateRequest(entity);
-        when(repository.findByPersonalNumber(request.getPersonalNumber())).thenReturn(Optional.of(entity));
+        when(repository.existsByPersonalNumber(request.getPersonalNumber())).thenReturn(true);
 
         assertThatThrownBy(() -> victim.validate(request))
                 .isInstanceOf(ClientExistsException.class)
                 .hasMessage(CLIENT_PERSONAL_NUMBER_EXISTS + request.getPersonalNumber());
 
-        verify(repository, times(1)).findByPersonalNumber(request.getPersonalNumber());
+        verify(repository, times(1)).existsByPersonalNumber(request.getPersonalNumber());
         verifyNoMoreInteractions(repository);
     }
 
@@ -76,10 +76,10 @@ class ClientAlreadyExistsValidationRuleTest {
     }
 
     @Test
-    void validate_updateRequest_whenFound_andIdNotMatch_thenException() {
+    void validate_updateRequest_whenFound_andIdNotMatch_thenThrowClientExistsException() {
         ClientEntity entity = clientEntity();
         ClientUpdateRequest request = clientUpdateRequest(entity);
-        request.setId(2L);
+        request.setId(request.getId() + 1);
         when(repository.findByPersonalNumber(request.getPersonalNumber())).thenReturn(Optional.of(entity));
 
         assertThatThrownBy(() -> victim.validate(request))
