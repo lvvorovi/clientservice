@@ -4,7 +4,7 @@ package com.roadmap.clientservice.swagger;
 public class ApiResponseStore {
 
     public static final int OK_CODE = 200;
-    public static final String OK_MESSAGE = "Ok";
+    public static final String OK_MESSAGE = "OK";
 
     public static final int CREATED_CODE = 201;
     public static final String CREATED_MESSAGE = "Created";

@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 
 @Data
-@Validated
 public class ErrorDto {
 
     private final int code;
