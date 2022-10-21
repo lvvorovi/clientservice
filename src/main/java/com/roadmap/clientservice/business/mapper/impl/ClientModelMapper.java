@@ -10,32 +10,39 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import static com.roadmap.clientservice.business.LogMessageStore.MAPPER_LOG_MESSAGE;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class ClientModelMapper implements ClientMapper {
 
-    private static final String LOG_MESSAGE = "{} mapped {} to {}";
     private final ModelMapper modelMapper;
 
     @Override
     public ClientResponse entityToResponse(ClientEntity entity) {
-        ClientResponse dto = modelMapper.map(entity, ClientResponse.class);
-        log.debug(LOG_MESSAGE, this.getClass(), entity, dto);
-        return dto;
+        ClientResponse response = modelMapper.map(entity, ClientResponse.class);
+        if (log.isDebugEnabled()) {
+            log.debug(entity + MAPPER_LOG_MESSAGE + response);
+        }
+        return response;
     }
 
     @Override
     public ClientEntity requestToEntity(ClientCreateRequest request) {
         ClientEntity entity = modelMapper.map(request, ClientEntity.class);
-        log.debug(LOG_MESSAGE, this.getClass(), request, entity);
+        if (log.isDebugEnabled()) {
+            log.debug(request + MAPPER_LOG_MESSAGE + entity);
+        }
         return entity;
     }
 
     @Override
     public ClientEntity requestToEntity(ClientUpdateRequest request) {
         ClientEntity entity = modelMapper.map(request, ClientEntity.class);
-        log.debug(LOG_MESSAGE, this.getClass(), request, entity);
+        if (log.isDebugEnabled()) {
+            log.debug(request + MAPPER_LOG_MESSAGE + entity);
+        }
         return entity;
     }
 }
