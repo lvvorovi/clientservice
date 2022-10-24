@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import static com.roadmap.clientservice.business.LogMessageStore.MAPPER_LOG_MESSAGE;
+import static com.roadmap.clientservice.business.LogMessageStore.*;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class ClientModelMapper implements ClientMapper {
     public ClientResponse entityToResponse(ClientEntity entity) {
         ClientResponse response = modelMapper.map(entity, ClientResponse.class);
         if (log.isDebugEnabled()) {
-            log.debug(entity + MAPPER_LOG_MESSAGE + response);
+            log.debug(CLIENT_ENTITY_TO_RESPONSE_LOG + response.getId());
         }
         return response;
     }
@@ -32,7 +32,7 @@ public class ClientModelMapper implements ClientMapper {
     public ClientEntity requestToEntity(ClientCreateRequest request) {
         ClientEntity entity = modelMapper.map(request, ClientEntity.class);
         if (log.isDebugEnabled()) {
-            log.debug(request + MAPPER_LOG_MESSAGE + entity);
+            log.debug(CLIENT_CREATE_REQUEST_TO_ENTITY_LOG);
         }
         return entity;
     }
@@ -41,7 +41,7 @@ public class ClientModelMapper implements ClientMapper {
     public ClientEntity requestToEntity(ClientUpdateRequest request) {
         ClientEntity entity = modelMapper.map(request, ClientEntity.class);
         if (log.isDebugEnabled()) {
-            log.debug(request + MAPPER_LOG_MESSAGE + entity);
+            log.debug(CLIENT_UPDATE_REQUEST_TO_ENTITY_LOG + request.getId());
         }
         return entity;
     }
