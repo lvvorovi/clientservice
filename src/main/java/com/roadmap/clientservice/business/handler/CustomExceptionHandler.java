@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
 import static com.roadmap.clientservice.business.LogMessageStore.VALIDATION_FAILED;
@@ -20,15 +21,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class CustomExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
+                                                                          HttpServletRequest request) {
         String exceptionMessage = ex.getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
-        log.warn(VALIDATION_FAILED + exceptionMessage);
+
         ErrorDto errorDto = new ErrorDto(
-                BAD_REQUEST.value(),
-                BAD_REQUEST.getReasonPhrase(),
-                exceptionMessage);
+                BAD_REQUEST,
+                exceptionMessage,
+                request);
+
+        log.warn(VALIDATION_FAILED + errorDto);
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .contentType(APPLICATION_JSON)
@@ -36,12 +40,14 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDto> handleClientNotFoundException(ValidationException ex) {
-        log.warn(VALIDATION_FAILED + ex.getMessage());
+    public ResponseEntity<ErrorDto> handleClientNotFoundException(ValidationException ex,
+                                                                  HttpServletRequest request) {
         ErrorDto errorDto = new ErrorDto(
-                BAD_REQUEST.value(),
-                BAD_REQUEST.getReasonPhrase(),
-                ex.getMessage());
+                BAD_REQUEST,
+                ex.getMessage(),
+                request);
+
+        log.warn(VALIDATION_FAILED + errorDto);
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .contentType(APPLICATION_JSON)
@@ -49,12 +55,15 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDto> handleError(Error ex) {
-        log.error(ex.getMessage(), ex);
+    public ResponseEntity<ErrorDto> handleError(Error ex,
+                                                HttpServletRequest request) {
         ErrorDto errorDto = new ErrorDto(
-                INTERNAL_SERVER_ERROR.value(),
-                INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                ex.getMessage());
+                INTERNAL_SERVER_ERROR,
+                ex.getMessage(),
+                request);
+
+        log.error(VALIDATION_FAILED + errorDto);
+        ex.printStackTrace();
         return ResponseEntity
                 .internalServerError()
                 .contentType(APPLICATION_JSON)
