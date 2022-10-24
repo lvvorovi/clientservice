@@ -55,7 +55,7 @@ class ClientControllerIntegrationTest {
         assertNotNull(result.getId());
         assertNotNull(locationHeader);
         assertTrue(locationHeader.endsWith(result.getId().toString()));
-        assertTrue(output.getOut().contains(CLIENT_SAVE_REQUEST_LOG + request));
+        assertTrue(output.getOut().contains(CLIENT_SAVED_LOG + result.getId()));
     }
 
     @Test
@@ -69,7 +69,7 @@ class ClientControllerIntegrationTest {
         ClientResponse result = jsonToClientResponse(content);
         assertNotNull(result);
         assertEquals(id, result.getId());
-        assertTrue(output.getOut().contains(CLIENT_FOUND_LOG));
+        assertTrue(output.getOut().contains(CLIENT_FOUND_LOG + id));
     }
 
     @Test
@@ -88,7 +88,7 @@ class ClientControllerIntegrationTest {
         ClientResponse result = jsonToClientResponse(content);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_UPDATED_LOG));
+        assertTrue(output.getOut().contains(CLIENT_UPDATED_LOG + result.getId()));
     }
 
     @Test

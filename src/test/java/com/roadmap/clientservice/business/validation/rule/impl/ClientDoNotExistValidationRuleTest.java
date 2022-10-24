@@ -1,7 +1,6 @@
 package com.roadmap.clientservice.business.validation.rule.impl;
 
 import com.roadmap.clientservice.business.repository.ClientJpaRepository;
-import com.roadmap.clientservice.business.repository.model.ClientEntity;
 import com.roadmap.clientservice.business.validation.exception.ClientNotFoundException;
 import com.roadmap.clientservice.model.ClientUpdateRequest;
 import org.junit.jupiter.api.Test;
@@ -10,10 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static com.roadmap.clientservice.business.LogMessageStore.CLIENT_ID_NOT_FOUND;
-import static com.roadmap.clientservice.util.ClientTestUtil.*;
+import static com.roadmap.clientservice.util.ClientTestUtil.clientEntity;
+import static com.roadmap.clientservice.util.ClientTestUtil.clientUpdateRequest;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;

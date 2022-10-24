@@ -11,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static com.roadmap.clientservice.business.LogMessageStore.*;
 import static com.roadmap.clientservice.util.ClientTestUtil.*;
 import static com.roadmap.clientservice.util.JsonUtil.jsonToClientResponse;
 import static com.roadmap.clientservice.util.JsonUtil.objectToJson;
@@ -38,7 +36,7 @@ class ClientControllerUnitTest {
     MockMvc mvc;
 
     @Test
-    void save_whenValidCreateRequest_thenSave_andReturnResponse(CapturedOutput output) throws Exception {
+    void save_whenValidCreateRequest_thenSave_andReturnResponse() throws Exception {
         ClientEntity entity = clientEntity();
         ClientCreateRequest request = clientCreateRequest(entity);
         ClientResponse expected = clientResponse(entity);
@@ -54,13 +52,12 @@ class ClientControllerUnitTest {
         String content = mvcResult.getResponse().getContentAsString();
         ClientResponse result = jsonToClientResponse(content);
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_SAVE_REQUEST_LOG + request));
         verify(service, times(1)).save(request);
         verifyNoMoreInteractions(service);
     }
 
     @Test
-    void save_whenNotValidRequestJson_thenDoNotSave_andThrowException(CapturedOutput output) throws Exception {
+    void save_whenNotValidRequestJson_thenDoNotSave_andThrowException() throws Exception {
         ClientEntity entity = clientEntity();
         ClientCreateRequest request = clientCreateRequest(entity);
         request.setFirstName(null);
@@ -70,12 +67,11 @@ class ClientControllerUnitTest {
                         .content(objectToJson(request)))
                 .andExpect(status().isBadRequest());
 
-        assertFalse(output.getOut().contains(CLIENT_SAVE_REQUEST_LOG + request));
         verifyNoInteractions(service);
     }
 
     @Test
-    void findById_whenFound_thenReturnResponse(CapturedOutput output) throws Exception {
+    void findById_whenFound_thenReturnResponse() throws Exception {
         ClientEntity entity = clientEntity();
         ClientResponse expected = clientResponse(entity);
         when(service.findById(id)).thenReturn(expected);
@@ -87,13 +83,12 @@ class ClientControllerUnitTest {
         String content = mvcResult.getResponse().getContentAsString();
         ClientResponse result = jsonToClientResponse(content);
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_FIND_BY_ID_REQUEST_LOG + id));
         verify(service, times(1)).findById(id);
         verifyNoMoreInteractions(service);
     }
 
     @Test
-    void update_whenValidBody_thenPassToService_andReturnResponse(CapturedOutput output) throws Exception {
+    void update_whenValidBody_thenPassToService_andReturnResponse() throws Exception {
         ClientEntity entity = clientEntity();
         ClientUpdateRequest request = clientUpdateRequest(entity);
         ClientResponse expected = clientResponse(entity);
@@ -108,13 +103,12 @@ class ClientControllerUnitTest {
         String content = mvcResult.getResponse().getContentAsString();
         ClientResponse result = jsonToClientResponse(content);
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_UPDATE_REQUEST_LOG + request));
         verify(service, times(1)).update(request);
         verifyNoMoreInteractions(service);
     }
 
     @Test
-    void update_whenNotValidBody_thenDoNotUpdate_andThrowException(CapturedOutput output) throws Exception {
+    void update_whenNotValidBody_thenDoNotUpdate_andThrowException() throws Exception {
         ClientEntity entity = clientEntity();
         ClientUpdateRequest request = clientUpdateRequest(entity);
         request.setFirstName(null);
@@ -124,17 +118,15 @@ class ClientControllerUnitTest {
                         .content(objectToJson(request)))
                 .andExpect(status().isBadRequest());
 
-        assertFalse(output.getOut().contains(CLIENT_UPDATE_REQUEST_LOG + request));
         verifyNoInteractions(service);
     }
 
     @Test
-    void deleteById_whenId_thenPassToService_andReturnNoContent(CapturedOutput output) throws Exception {
+    void deleteById_whenId_thenPassToService_andReturnNoContent() throws Exception {
         doNothing().when(service).deleteById(id);
         mvc.perform(delete(deleteById_uri))
                 .andExpect(status().isNoContent());
 
-        assertTrue(output.getOut().contains(CLIENT_DELETE_BY_ID_REQUEST_LOG + id));
         verify(service, times(1)).deleteById(id);
         verifyNoMoreInteractions(service);
     }

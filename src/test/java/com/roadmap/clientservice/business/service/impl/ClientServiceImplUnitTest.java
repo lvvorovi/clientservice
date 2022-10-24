@@ -8,6 +8,7 @@ import com.roadmap.clientservice.business.validation.service.ClientValidationSer
 import com.roadmap.clientservice.model.ClientCreateRequest;
 import com.roadmap.clientservice.model.ClientResponse;
 import com.roadmap.clientservice.model.ClientUpdateRequest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({MockitoExtension.class, OutputCaptureExtension.class})
+@Tag("UT")
 class ClientServiceImplUnitTest {
 
     @Mock
@@ -52,7 +54,7 @@ class ClientServiceImplUnitTest {
         ClientResponse result = victim.save(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_SAVED_LOG + savedEntity));
+        assertTrue(output.getOut().contains(CLIENT_SAVED_LOG + savedEntity.getId()));
         verify(mapper, times(1)).requestToEntity(request);
         verify(repository, times(1)).save(requestEntity);
         verify(mapper, times(1)).entityToResponse(savedEntity);
@@ -70,7 +72,7 @@ class ClientServiceImplUnitTest {
         ClientResponse result = victim.findById(entity.getId());
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_FOUND_LOG + entity));
+        assertTrue(output.getOut().contains(CLIENT_FOUND_LOG + entity.getId()));
         verify(repository, times(1)).findById(entity.getId());
         verify(mapper, times(1)).entityToResponse(entity);
         verifyNoMoreInteractions(repository, mapper);
@@ -105,7 +107,7 @@ class ClientServiceImplUnitTest {
         ClientResponse result = victim.update(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(CLIENT_UPDATED_LOG + updatedEntity));
+        assertTrue(output.getOut().contains(CLIENT_UPDATED_LOG + updatedEntity.getId()));
         verify(validationService, times(1)).validate(request);
         verify(mapper, times(1)).requestToEntity(request);
         verify(repository, times(1)).save(requestEntity);

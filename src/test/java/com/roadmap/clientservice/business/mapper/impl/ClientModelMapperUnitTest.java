@@ -12,7 +12,7 @@ import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.roadmap.clientservice.business.LogMessageStore.MAPPER_LOG_MESSAGE;
+import static com.roadmap.clientservice.business.LogMessageStore.*;
 import static com.roadmap.clientservice.util.ClientTestUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +33,7 @@ class ClientModelMapperUnitTest {
         ClientResponse result = victim.entityToResponse(entity);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(entity + MAPPER_LOG_MESSAGE + expected));
+        assertTrue(output.getOut().contains(CLIENT_ENTITY_TO_RESPONSE_LOG + expected.getId()));
     }
 
     @Test
@@ -45,7 +45,7 @@ class ClientModelMapperUnitTest {
         ClientEntity result = victim.requestToEntity(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(request + MAPPER_LOG_MESSAGE + expected));
+        assertTrue(output.getOut().contains(CLIENT_CREATE_REQUEST_TO_ENTITY_LOG));
     }
 
     @Test
@@ -56,7 +56,7 @@ class ClientModelMapperUnitTest {
         ClientEntity result = victim.requestToEntity(request);
 
         assertEquals(expected, result);
-        assertTrue(output.getOut().contains(request + MAPPER_LOG_MESSAGE + expected));
+        assertTrue(output.getOut().contains(CLIENT_UPDATE_REQUEST_TO_ENTITY_LOG + expected.getId()));
     }
 
 }
