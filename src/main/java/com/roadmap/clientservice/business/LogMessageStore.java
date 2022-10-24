@@ -15,17 +15,15 @@ public class LogMessageStore {
     public static final String CLIENT_PERSONAL_NUMBER_EXISTS = "Client already exists with personal number: ";
 
     //Client logs
-    public static final String CLIENT_SAVE_REQUEST_LOG = "Save Client request with body: ";
-    public static final String CLIENT_FIND_BY_ID_REQUEST_LOG = "Find Client by Id request with id: ";
-    public static final String CLIENT_UPDATE_REQUEST_LOG = "Update Client request with body: ";
-    public static final String CLIENT_DELETE_BY_ID_REQUEST_LOG = "Delete Client request with id: ";
-    public static final String CLIENT_FOUND_LOG = "Client found: ";
-    public static final String CLIENT_SAVED_LOG = "Client saved: ";
-    public static final String CLIENT_UPDATED_LOG = "Client was updated to: ";
+    public static final String CLIENT_FOUND_LOG = "Client found with id: ";
+    public static final String CLIENT_SAVED_LOG = "Client saved with id: ";
+    public static final String CLIENT_UPDATED_LOG = "Client updated with id: ";
     public static final String CLIENT_DELETED_BY_ID_LOG = "Client deleted with id: ";
 
     //ModelMapper logs
-    public static final String MAPPER_LOG_MESSAGE = " mapped to: ";
+    public static final String CLIENT_ENTITY_TO_RESPONSE_LOG = "ClientEntity mapped to ClientResponse with id: ";
+    public static final String CLIENT_CREATE_REQUEST_TO_ENTITY_LOG = "ClientCreateRequest mapped to ClientEntity. No Id assigned yet.";
+    public static final String CLIENT_UPDATE_REQUEST_TO_ENTITY_LOG = "ClientUpdateRequest mapped to ClientEntity with id: ";
 
     //ExceptionHandler logs
     public static final String VALIDATION_FAILED = "Validation failed. ";
