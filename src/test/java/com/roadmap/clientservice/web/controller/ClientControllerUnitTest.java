@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static com.roadmap.clientservice.util.ClientTestUtil.*;
 import static com.roadmap.clientservice.util.JsonUtil.jsonToClientResponse;
 import static com.roadmap.clientservice.util.JsonUtil.objectToJson;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
