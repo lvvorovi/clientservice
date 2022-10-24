@@ -29,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
         validationService.validate(request);
         ClientEntity entity = mapper.requestToEntity(request);
         ClientEntity savedEntity = repository.save(entity);
-        log.info(CLIENT_SAVED_LOG + savedEntity);
+        log.info(CLIENT_SAVED_LOG + savedEntity.getId());
         return mapper.entityToResponse(savedEntity);
     }
 
@@ -37,7 +37,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse findById(Long id) {
         ClientEntity entity = repository.findById(id)
                 .orElseThrow(() -> new ClientNotFoundException(CLIENT_ID_NOT_FOUND + id));
-        log.info(CLIENT_FOUND_LOG + entity);
+        log.info(CLIENT_FOUND_LOG + entity.getId());
         return mapper.entityToResponse(entity);
     }
 
@@ -46,10 +46,7 @@ public class ClientServiceImpl implements ClientService {
         validationService.validate(request);
         ClientEntity entity = mapper.requestToEntity(request);
         ClientEntity updatedEntity = repository.save(entity);
-        log.info(CLIENT_UPDATED_LOG + updatedEntity);
-        /*
-        * TODO Hibernate
-        * */
+        log.info(CLIENT_UPDATED_LOG + updatedEntity.getId());
         return mapper.entityToResponse(updatedEntity);
     }
 
