@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.clientservice'
+group = 'com.roadmap.clientservice'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 

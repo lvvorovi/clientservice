@@ -49,6 +49,7 @@ public class ClientCreateRequest {
     @Digits(integer = 25, fraction = 2, message = FIELD_MAX_DIGITS_25_2)
     private BigDecimal expenses;
 
+    @PastOrPresent(message = FIELD_PAST_OR_PRESENT)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime created;
 

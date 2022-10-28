@@ -40,8 +40,8 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDto> handleClientNotFoundException(ValidationException ex,
-                                                                  HttpServletRequest request) {
+    public ResponseEntity<ErrorDto> handleValidationException(ValidationException ex,
+                                                              HttpServletRequest request) {
         ErrorDto errorDto = new ErrorDto(
                 BAD_REQUEST,
                 ex.getMessage(),
@@ -63,7 +63,6 @@ public class CustomExceptionHandler {
                 request);
 
         log.error(VALIDATION_FAILED + errorDto);
-        ex.printStackTrace();
         return ResponseEntity
                 .internalServerError()
                 .contentType(APPLICATION_JSON)
